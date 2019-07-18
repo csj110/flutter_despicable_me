@@ -9,27 +9,27 @@ class CharacterListingScreen extends StatefulWidget {
 }
 
 class _CharacterListingScreenState extends State<CharacterListingScreen> {
-  // PageController _pageController;
-  // int currentPage=0;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _pageController=PageController(
-  //     viewportFraction: 1.0,
-  //     initialPage:currentPage,
-  //     keepPage: false
-  //   );
-  // }
+  PageController _pageController;
+  int currentPage=0;
+  @override
+  void initState() {
+    super.initState();
+    _pageController=PageController(
+      viewportFraction: 1.0,
+      initialPage:currentPage,
+      keepPage: false
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    var currentPage = 0.0;
-    PageController controller = PageController(initialPage: currentPage.round());
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page;
-      });
-    });
+    // var currentPage = 0.0;
+    // PageController controller = PageController(initialPage: currentPage.round());
+    // controller.addListener(() {
+    //   setState(() {
+    //     currentPage = controller.page;
+    //   });
+    // });
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.arrow_back_ios),
@@ -57,10 +57,10 @@ class _CharacterListingScreenState extends State<CharacterListingScreen> {
             Expanded(
               child: PageView.builder(
                 itemCount: characters.length,
-                controller: controller,
+                controller: _pageController,
                 pageSnapping: true,
                 itemBuilder: (context,index){
-                  return CharacterWidget(index:index);
+                  return CharacterWidget(index:index,pageController:_pageController);
                 },
               ),
             )

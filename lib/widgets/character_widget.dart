@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 
 class CharacterWidget extends StatelessWidget {
   final index;
+  final PageController pageController;
 
-  const CharacterWidget({Key key, this.index}) : super(key: key);
+  const CharacterWidget({Key key, this.index, this.pageController})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -20,59 +23,70 @@ class CharacterWidget extends StatelessWidget {
                 pageBuilder: (context, _, __) =>
                     CharacterDetailScreen(character: characters[index])));
       },
-      child: Stack(children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: ClipPath(
-            clipper: CharacterCardBackgroundClipper(),
-            child: Hero(
-              tag: "background-${characters[0].name}",
-              child: Container(
-                height: 0.5 * screenHeight,
-                width: 0.9 * screenWidth,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: characters[index].colors,
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft)),
-              ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(0.3, -0.6),
-          child: Hero(
-            tag: "image-${characters[index].name}",
-            child: Image.asset(
-              characters[index].imagePath,
-              height: screenHeight * 0.55,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0, bottom: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Hero(
-                tag: "name-${characters[0].name}",
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    characters[index].name,
-                    style: AppTheme.heading,
+      child: AnimatedBuilder(
+        animation: pageController,
+        builder: (context, child) {
+          double value = 1.0;
+          if (pageController.position.haveDimensions) {
+            value = pageController.page - index;
+            value = (1 - (value.abs() * 0.6)).clamp(0.0, 1.0);
+            print(value);
+          }
+          return Stack(children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipPath(
+                clipper: CharacterCardBackgroundClipper(),
+                child: Hero(
+                  tag: "background-${characters[0].name}",
+                  child: Container(
+                    height: 0.5 * screenHeight * value,
+                    width: 0.9 * screenWidth,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: characters[index].colors,
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft)),
                   ),
                 ),
               ),
-              Text(
-                'Tap to Read more',
-                style: AppTheme.subHeading,
+            ),
+            Align(
+              alignment: Alignment(1, -2),
+              child: Hero(
+                tag: "image-${characters[index].name}",
+                child: Image.asset(
+                  characters[index].imagePath,
+                  height: screenHeight * 0.6,
+                ),
               ),
-            ],
-          ),
-        ),
-      ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 45.0, bottom: 35.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Hero(
+                    tag: "name-${characters[0].name}",
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(
+                        characters[index].name,
+                        style: AppTheme.heading,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Tap to Read more',
+                    style: AppTheme.subHeading,
+                  ),
+                ],
+              ),
+            ),
+          ]);
+        },
+      ),
     );
   }
 }
