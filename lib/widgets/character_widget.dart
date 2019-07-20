@@ -52,12 +52,12 @@ class CharacterWidget extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: Alignment(1, -2),
+              alignment: Alignment(0.8,-1.0),
               child: Hero(
                 tag: "image-${characters[index].name}",
                 child: Image.asset(
                   characters[index].imagePath,
-                  height: screenHeight * 0.6,
+                  height: screenHeight * 0.6*value,
                 ),
               ),
             ),

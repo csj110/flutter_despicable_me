@@ -16,6 +16,7 @@ class _CharacterDetailScreenState extends State<CharacterDetailScreen>
     with AfterLayoutMixin<CharacterDetailScreen> {
   double _bottomSheetPosition = -330;
   bool isCollapsed = false;
+  Curve curve = Curves.decelerate;
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -89,13 +90,15 @@ class _CharacterDetailScreenState extends State<CharacterDetailScreen>
                     style: AppTheme.subHeading,
                   ),
                 ),
-                SizedBox(height: 80,)
+                SizedBox(
+                  height: 80,
+                )
               ],
             ),
           ),
           AnimatedPositioned(
               duration: const Duration(milliseconds: 350),
-              curve: Curves.decelerate,
+              curve: curve,
               bottom: _bottomSheetPosition,
               left: 0,
               right: 0,
@@ -210,7 +213,11 @@ class _CharacterDetailScreenState extends State<CharacterDetailScreen>
       setState(() {
         isCollapsed = true;
         _bottomSheetPosition = widget._collapasedBottomSheetBottom;
+        curve = Curves.bounceInOut;
       });
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      curve = Curves.decelerate;
     });
   }
 }
